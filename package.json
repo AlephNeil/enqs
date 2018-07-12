@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Enquiries web app",
   "main": "index.js",
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "test.js"
+  },
   "dependencies": {
     "bluebird": "^3.5.1",
     "express": "^4.16.3",
@@ -10,16 +14,21 @@
     "pug": "^2.0.3",
     "sequelize": "^4.38.0",
     "sqlite3": "^4.0.1",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "http-errors": "~1.6.2",
+    "morgan": "~1.9.0"
   },
   "devDependencies": {},
-  "scripts": {
-    "test": "test.js"
-  },
   "keywords": [
     "express",
     "fun"
   ],
   "author": "neilf",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlephNeil/enqs.git"
+  }
 }
