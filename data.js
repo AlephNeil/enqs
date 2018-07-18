@@ -43,8 +43,10 @@ function addRecord(tableName, obj) {
 }
 
 function delRecord(tableName, obj) {
+    var whereStr = clausewitch(obj).join(' AND ')
+    whereStr = whereStr !== '' ? whereStr : '1 = 1'
     var sql = `DELETE FROM ${tableName}
-                WHERE ${clausewitz(obj).join(' AND ')}`
+                WHERE ${whereStr}`
     return gizmo(sql)
 }
 
@@ -54,7 +56,7 @@ function updRecord(tableName, setObj, whereObj) {
     }
     var setStr = clausewitz(setObj, true).join(', ')
     var whereStr = clausewitz(whereObj).join(' AND ')
-    whereStr = whereStr !== '' ? wherestr : '1 = 1'
+    whereStr = whereStr !== '' ? whereStr : '1 = 1'
     var sql = `UPDATE ${tableName} SET ${setStr} WHERE ${whereStr}`
     return gizmo(sql)
 }
