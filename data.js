@@ -52,7 +52,7 @@ function updRecord(tableName, setObj, whereObj) {
     if (_.isEmpty(setObj)) {
         throw new Error('Nothing to set')
     }
-    var setStr = clausewitz(setObj).join(', ')
+    var setStr = clausewitz(setObj, true).join(', ')
     var whereStr = clausewitz(whereObj).join(' AND ')
     whereStr = whereStr !== '' ? wherestr : '1 = 1'
     var sql = `UPDATE ${tableName} SET ${setStr} WHERE ${whereStr}`
