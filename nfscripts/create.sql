@@ -3,7 +3,8 @@ drop table if exists user;
 create table user (
 	id integer primary key autoincrement,
 	winName text not null unique,
-	dispName text not null unique
+	dispName text not null unique,
+	password text not null default ''
 );
 
 insert into user (winName, dispName)

@@ -19,7 +19,7 @@ function gizmo(sql, method) {
     })
 }
 
-function clausewitz(obj, suppress) {
+function clausewitz(obj, updateSetFlag) {
     return _.keys(obj).map(k => {
         var v = obj[k]
         var value, op
@@ -28,25 +28,25 @@ function clausewitz(obj, suppress) {
         }
         else {
             value = v
-            op = suppress ? '=' : (v === null ? 'IS' : '=')
+            op = updateSetFlag ? '=' : (v === null ? 'IS' : '=')
         }
-        return `(${k} ${op} ${escape(value)})`
+        var opener = updateSetFlag ? '' : '('
+        var closer = updateSetFlag ? '' : ')'
+        return `${opener}${k} ${op} ${escape(value)}${closer}`
     })
 }
 
 function addRecord(tableName, obj) {
     var keys = _.keys(obj)
     var vals = keys.map(k => escape(obj[k]))
-    var sql = `INSERT INTO ${tableName} (${keys.join(', ')})
-                VALUES (${vals.join(', ')})`
+    var sql = `INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${vals.join(', ')})`
     return gizmo(sql)
 }
 
 function delRecord(tableName, obj) {
     var whereStr = clausewitch(obj).join(' AND ')
     whereStr = whereStr !== '' ? whereStr : '1 = 1'
-    var sql = `DELETE FROM ${tableName}
-                WHERE ${whereStr}`
+    var sql = `DELETE FROM ${tableName} WHERE ${whereStr}`
     return gizmo(sql)
 }
 
@@ -64,8 +64,7 @@ function updRecord(tableName, setObj, whereObj) {
 function listRecords(tableName, whereObj) {
     var whereStr = clausewitz(whereObj).join(' AND ')
     whereStr = whereStr !== '' ? whereStr : '1 = 1'
-    var sql = `SELECT * FROM ${tableName}
-                WHERE ${whereStr}`
+    var sql = `SELECT * FROM ${tableName} WHERE ${whereStr}`
     return gizmo(sql, 'all')
 }
 
