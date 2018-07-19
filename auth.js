@@ -3,10 +3,8 @@ const passport = require('passport')
 const Strategy = require('passport-local').Strategy
 const db = require('./db')
 
-passport.use(new Strategy({
-        passReqToCallback: true,
-    },
-    function(req, username, password, cb) {
+passport.use(new Strategy(
+    function(username, password, cb) {
         console.log('Here I am!')
         db.users.findByUsername(username, function(err, user) {
             if (err) return cb(err)

@@ -35,6 +35,16 @@ app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
 
+app.use(function(req, res, next) {
+    // console.log(JSON.stringify(req.session))
+    if (req.user) {
+        res.locals.usn = req.user.dispName
+    }
+    else {
+        res.locals.usn = 'Not logged in'
+    }
+    next()
+})
 
 app.use('/', indexRouter);
 
@@ -68,6 +78,12 @@ app.get('/secret',
     ensureLoggedIn('/login'),
     function(req, res) {
         res.render('secret')
+    }
+)
+
+app.get('/ang',
+    function(req, res) {
+        res.render('ang')
     }
 )
 

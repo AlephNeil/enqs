@@ -5,7 +5,7 @@ const _ = require('underscore')
 
 
 function gizmo(sql, method) {
-    if (process.env['DEBUG']) console.log(sql)
+    if (process.env['DEBUG']) console.log(`GIZMO: method=${method}, sql=${sql}`)
     method = method ? method : 'run'
     return new Promise((res, rej) => {
         db[method](sql, {}, (err, ...args) => {
@@ -36,6 +36,14 @@ function clausewitz(obj, updateSetFlag) {
     })
 }
 
+function mahan(obj, updateSetFlag) {
+    if (_.isEmpty(obj)) {
+        if (updateSetFlag) throw new Error('Nothing to set')
+        return '1 = 1'
+    }
+    return clausewitz(obj, updateSetFlag).join(updateSetFlag ? ' AND ' : ', ')
+}
+
 function addRecord(tableName, obj) {
     var keys = _.keys(obj)
     var vals = keys.map(k => escape(obj[k]))
@@ -44,27 +52,17 @@ function addRecord(tableName, obj) {
 }
 
 function delRecord(tableName, obj) {
-    var whereStr = clausewitch(obj).join(' AND ')
-    whereStr = whereStr !== '' ? whereStr : '1 = 1'
-    var sql = `DELETE FROM ${tableName} WHERE ${whereStr}`
+    var sql = `DELETE FROM ${tableName} WHERE ${mahan(obj)}`
     return gizmo(sql)
 }
 
 function updRecord(tableName, setObj, whereObj) {
-    if (_.isEmpty(setObj)) {
-        throw new Error('Nothing to set')
-    }
-    var setStr = clausewitz(setObj, true).join(', ')
-    var whereStr = clausewitz(whereObj).join(' AND ')
-    whereStr = whereStr !== '' ? whereStr : '1 = 1'
-    var sql = `UPDATE ${tableName} SET ${setStr} WHERE ${whereStr}`
+    var sql = `UPDATE ${tableName} SET ${mahan(setObj, true)} WHERE ${mahan(whereObj)}`
     return gizmo(sql)
 }
 
 function listRecords(tableName, whereObj) {
-    var whereStr = clausewitz(whereObj).join(' AND ')
-    whereStr = whereStr !== '' ? whereStr : '1 = 1'
-    var sql = `SELECT * FROM ${tableName} WHERE ${whereStr}`
+    var sql = `SELECT * FROM ${tableName} WHERE ${mahan(whereObj)}`
     return gizmo(sql, 'all')
 }
 
