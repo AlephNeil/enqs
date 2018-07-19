@@ -2,18 +2,6 @@ const express = require('express')
 const passport = require('passport')
 const Strategy = require('passport-local').Strategy
 const db = require('./db')
-// const bc = require('bcrypt')
-
-
-// function encrypt_passwd(passwd) {
-//     var salt = bc.genSaltSync(10)
-//     return bc.hashSync(passwd, salt) 
-// }
-
-// function test_passwd(guess, hash) {
-//     return bc.compareSync(guess, hash)
-// }
-
 
 passport.use(new Strategy({
         passReqToCallback: true,

@@ -40,17 +40,20 @@ var users = {
                 return cb('Could not find unique match')
             }
             var user = arr[0]
-            cb(null, bc.compareSync(test_passwd, user.password))
+            if (user.password === '' && test_passwd === '') {
+                cb(null, true)
+            }
+            else {
+                cb(null, bc.compareSync(test_passwd, user.password))
+            }
         }).catch(err => {
             cb(err)
         })
     },
     findByUsername(name, cb) {
         data.listRecords('user', { winName: name }).then(arr => {
-            if (arr.length !== 1) {
-                return cb('Could not find unique match')
-            }
-            cb(null, arr[0])
+            user = arr.length === 1 ? arr[0] : false
+            cb(null, user)
         }).catch(err => {
             cb(err)
         })

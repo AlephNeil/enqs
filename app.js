@@ -5,6 +5,8 @@ var path = require('path');
 // var bodyParser = require('body-parser')
 var expressSession = require('express-session')
 var logger = require('morgan');
+var flash = require('connect-flash')
+var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -28,6 +30,7 @@ app.use(expressSession({
     resave: false,
     saveUninitialized: false,
 }))
+app.use(flash())
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -39,7 +42,7 @@ app.use('/users', usersRouter);
 
 app.get('/login',
     function(req, res) {
-        res.render('login')
+        res.render('login', { messages: req.flash('error') })
     }
 )
 
@@ -48,10 +51,10 @@ app.post('/login',
         successRedirect: '/secret',
         failureRedirect: '/login',
         failureFlash: true,
-    }),
-    function(req, res) {
-        res.redirect('/')
-    }
+    })// ,
+    // function(req, res) {
+    //     res.redirect('/')
+    // }
 )
 
 app.get('/logout',
@@ -62,13 +65,14 @@ app.get('/logout',
 )
 
 app.get('/secret',
+    ensureLoggedIn('/login'),
     function(req, res) {
         res.render('secret')
     }
 )
 
 app.get('/profile',
-    require('connect-ensure-login').ensureLoggedIn(),
+    ensureLoggedIn('/login'),
     function(req, res) {
         res.render('profile', { user: req.user })
     }
